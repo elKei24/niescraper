@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='niescraper',
     version='1.0.0',
-    description='Parses SoC workflows and aggregates the QoS attributes',
+    description='Controls your browser in order to search for and book appointments at the Spanish Extranjería.',
     author='Elias Keis',
     author_email='git-commits@elkei.de',
     packages=find_packages(exclude=['tests', 'tests.*', 'docs', 'lazy']),
