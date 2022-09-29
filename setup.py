@@ -19,7 +19,8 @@ setup(
         'playsound',
         'selenium',
         'pytz',
-        'aioconsole'
+        'aioconsole',
+        'PyObjC'
     ],
     tests_require=[
         'pytest'
