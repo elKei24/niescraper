@@ -96,6 +96,12 @@ class AppointmentChecker:
             sleep(2)
 
     def _scroll_into_view(self, element):
+        # sometimes the cookie banner is in the way; do not accept or rate limits will apply
+        try:
+            cookie_element = self.driver.find_element(value="cookie-law-info-bar")
+            self.driver.execute_script("arguments[0].remove();", cookie_element)
+        except NoSuchElementException:
+            pass
         self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
 
     def _scroll_and_click(self, element):
@@ -111,7 +117,7 @@ class AppointmentChecker:
             pass
 
     def _fill_applicant_data(self, form_values: FormValues):
-        self.driver.find_element(value=form_values.identification_method.value).click()
+        self._scroll_and_click(self.driver.find_element(value=form_values.identification_method.value))
         self._fill_input_if_present("txtIdCitado", form_values.identifier)
         self._fill_input_if_present("txtDesCitado", form_values[FormField.Name])
         self._fill_input_if_present("txtAnnoCitado", form_values[FormField.YearOfBirth])
