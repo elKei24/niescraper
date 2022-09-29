@@ -15,16 +15,6 @@ from niescraper.intentionselection import find_assign_nie_option, find_register_
 from niescraper.officeselection import NearestValenciaOfficeSelectionStrategy, ManualOfficeSelectionStrategy, \
     DFSOfficeSelectionStrategy, SpecificOfficeSelectionStrategy
 
-form_values = FormValues(IdentificationMethod.ByNIE, {
-    FormField.NieNumber: "Y1234567A",
-    FormField.PassportId: "PASSP_ID",
-    FormField.Name: "My Name",
-    FormField.Email: "mail@example.org",
-    FormField.PhoneNumber: "123456789",
-    FormField.NativeCountry: "Alemania",
-    FormField.YearOfBirth: "2022",
-})
-
 
 def print_with_time(text):
     print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ": " + text)
@@ -52,7 +42,7 @@ def seconds_until_next_check(now: datetime.datetime = None):
 
 
 def keep_checking(checker: AppointmentChecker, selection_strategy: OfficeSelectionStrategy,
-                  intention_strategy: IntentionSelectionStrategy, form_values: FormValues = form_values):
+                  intention_strategy: IntentionSelectionStrategy, form_values: FormValues):
     while True:
         try:
             while not checker.check_citas_available(form_values, selection_strategy, intention_strategy):
@@ -67,14 +57,14 @@ def keep_checking(checker: AppointmentChecker, selection_strategy: OfficeSelecti
 
 
 def run_manual_mode(checker: AppointmentChecker, intention_strategy: IntentionSelectionStrategy,
-                    form_values: FormValues = form_values):
+                    form_values: FormValues):
     while True:
         checker.check_citas_available(form_values, ManualOfficeSelectionStrategy(), intention_strategy)
         input("Please press Enter to continue...")
 
 
 def run_check_all_offices(checker: AppointmentChecker, intention_strategy: IntentionSelectionStrategy,
-                          form_values: FormValues = form_values):
+                          form_values: FormValues):
     dfs_strategy = DFSOfficeSelectionStrategy()
     try:
         while True:
@@ -106,24 +96,29 @@ def run():
         parser = argparse.ArgumentParser(description="Check for available appointments at the Spanish government")
 
         intention_group = parser.add_mutually_exclusive_group(required=True)
-        intention_group.add_argument("--nie", help="Check for appointments for a NIE assignment",
+        intention_group.add_argument("--nieapplication", help="Check for appointments for a NIE assignment",
                                      dest="intention_strategy", action='store_const',
                                      const=find_assign_nie_option)
         intention_group.add_argument("--registration", help="Check for appointments for registration as EU citizen",
                                      dest="intention_strategy", action="store_const",
                                      const=find_register_eu_citizen_option)
 
+        # TODO add form_values parsing here
+
         parser.add_argument("--slow", action="store_true", help="Wait a second before submitting a page")
 
         mode_parsers = parser.add_subparsers(required=True, dest="mode", title="mode")
         mode_parsers.add_parser("manual", help="Select offices manually") \
-            .set_defaults(mode=lambda parsed_args: run_manual_mode(checker, parsed_args.intention_strategy))
+            .set_defaults(mode=lambda parsed_args: run_manual_mode(checker, parsed_args.intention_strategy,
+                                                                   parsed_args.form_values))
         mode_parsers.add_parser("alloffices", help="List all appointments for all offices") \
-            .set_defaults(mode=lambda parsed_args: run_check_all_offices(checker, parsed_args.intention_strategy))
+            .set_defaults(mode=lambda parsed_args: run_check_all_offices(checker, parsed_args.intention_strategy,
+                                                                         parsed_args.form_values))
         endless_parser = mode_parsers.add_parser("endless", help="Keep checking for appointments in an endless loop")
         endless_parser.set_defaults(mode=lambda parsed_args: keep_checking(checker,
                                                                            parsed_args.office_strategy(parsed_args),
-                                                                           parsed_args.intention_strategy))
+                                                                           parsed_args.intention_strategy,
+                                                                           parsed_args.form_values))
         office_parsers = endless_parser.add_subparsers(title="office selection mode",
                                                        required=True)
         office_parsers.add_parser("nearvalencia", help="The office in Valencia nearest to the city is chosen") \
