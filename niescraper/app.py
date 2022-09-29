@@ -16,7 +16,7 @@ from niescraper.officeselection import NearestValenciaOfficeSelectionStrategy, M
     DFSOfficeSelectionStrategy, SpecificOfficeSelectionStrategy
 
 form_values = FormValues(IdentificationMethod.ByNIE, {
-    FormField.NieNumber: "Y1234567A",
+    FormField.NieNumber: "Y1234567X",
     FormField.PassportId: "PASSP_ID",
     FormField.Name: "My Name",
     FormField.Email: "mail@example.org",
