@@ -6,7 +6,10 @@ Controls your browser in order to search for and book appointments at the Spanis
 
 To install the tool, run `pip install .` in the root directory. If you plan to edit files, run `pip install -e .` instead.
 
-Firefox needs to be installed as well. It should be easy to support multiple browsers, but so far I had no reason to do it.
+The tool controls Firefox to visit the official web page.
+Therefore, Firefox needs to be installed and the `geckodriver` executable needs to be in the PATH.
+You can download it [here](https://github.com/mozilla/geckodriver/releases/). 
+It should be easy to support other browsers as well, but so far I had no reason to do it.
 
 ## Usage
 

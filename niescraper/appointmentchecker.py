@@ -1,5 +1,4 @@
 import abc
-import importlib.resources
 from enum import auto, unique, Enum
 from time import sleep
 from typing import List, Callable, Dict, Optional, Mapping, Iterator
@@ -9,8 +8,6 @@ from selenium.common.exceptions import NoSuchElementException, StaleElementRefer
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-
-import niescraper.resources
 
 url = "https://sede.administracionespublicas.gob.es/icpplus/citar"
 
@@ -90,10 +87,9 @@ class AppointmentChecker:
     def driver(self) -> WebDriver:
         if self._driver is not None:
             return self._driver
-        with importlib.resources.path(niescraper.resources, "geckodriver") as gecko_driver_path:
-            driver = webdriver.Firefox(executable_path=gecko_driver_path)
-            self._driver = driver
-            return driver
+        driver = webdriver.Firefox()
+        self._driver = driver
+        return driver
 
     def _wait_if_slow(self):
         if self.slow:
