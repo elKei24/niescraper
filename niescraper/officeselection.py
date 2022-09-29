@@ -39,14 +39,27 @@ class SpecificOfficeSelectionStrategy(OfficeSelectionStrategy):
         self.office = office
 
     def select_province(self, provinces: List[WebElement]) -> None:
-        next(province for province in provinces
-             if self.province.lower().strip() in province.text.lower().strip()).click()
+        try:
+            province_element = next(province for province in provinces if self.province.lower().strip() in province.text.lower().strip())
+            province_element.click()
+        except StopIteration:
+            raise SpecificOfficeSelectionStrategy.ProvinceNotFoundException()
 
     def select_office(self, offices: List[WebElement]) -> None:
-        next(office for office in offices if self.office.lower().strip() in office.text.lower().strip()).click()
+        try:
+            office_element = next(office for office in offices if self.office.lower().strip() in office.text.lower().strip())
+            office_element.click()
+        except StopIteration:
+            raise SpecificOfficeSelectionStrategy.OfficeNotFoundException()
 
     def pre_select_office(self, offices: List[WebElement]) -> None:
         self.select_office(offices)
+
+    class OfficeNotFoundException(Exception):
+        pass
+
+    class ProvinceNotFoundException(Exception):
+        pass
 
 
 class ManualOfficeSelectionStrategy(OfficeSelectionStrategy):

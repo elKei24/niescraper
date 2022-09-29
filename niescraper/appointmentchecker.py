@@ -158,7 +158,7 @@ class AppointmentChecker:
         self.driver.get(url)
         self._select_province(office_strategy)
         offices = self.driver.find_elements(by=By.XPATH,
-                                            value="//select[@id = 'sede']/option[@value != '' and @value != '99']")
+                                            value="//select[@id = 'sede']/optgroup/option[@value != '' and @value != '99']")
         office_strategy.pre_select_office(offices)
 
         for attempts in range(5, -1, -1):
