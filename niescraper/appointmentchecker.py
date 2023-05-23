@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
-url = "https://sede.administracionespublicas.gob.es/icpplus/citar"
+url = "https://icp.administracionelectronica.gob.es/icpplus/index.html"
 
 
 class OfficeSelectionStrategy(abc.ABC):
